@@ -6,12 +6,19 @@ fetch("/api/transaction")
     return response.json();
   })
   .then(data => {
-    // save db data on global variable
-    transactions = data;
+    if (data.length > 0) {
+      console.log("data: ", data);
+      // save db data on global variable
+      transactions = data;
 
-    populateTotal();
-    populateTable();
-    populateChart();
+      populateTotal();
+      populateTable();
+      populateChart();
+
+      return data;
+    } else {
+      $('#clear-all-data').hide();
+    }
   });
 
 function populateTotal() {
@@ -76,6 +83,9 @@ function populateChart() {
         }]
     }
   });
+  
+  $('#clear-all-data').show();
+
 }
 
 function sendTransaction(isAdding) {
@@ -151,3 +161,19 @@ document.querySelector("#add-btn").onclick = function() {
 document.querySelector("#sub-btn").onclick = function() {
   sendTransaction(false);
 };
+
+async function clearData() {
+  const clearData = confirm("Are you sure you want to delete all budget data?");
+  if (clearData) {
+    $('#clear-all-workouts').hide();
+    
+    const res = await fetch("/api/deleteAll", {
+      method: "DELETE"
+    });
+
+    const json = await res.json();
+
+    location.reload();
+
+  }
+}
