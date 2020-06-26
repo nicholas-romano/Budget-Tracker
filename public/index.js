@@ -6,11 +6,10 @@ fetch("/api/transaction")
     return response.json();
   })
   .then(data => {
+    checkDatabase();
     if (data.length > 0) {
-      console.log("data: ", data);
       // save db data on global variable
       transactions = data;
-
       populateTotal();
       populateTable();
       populateChart();
@@ -19,6 +18,11 @@ fetch("/api/transaction")
     } else {
       $('#clear-all-data').hide();
     }
+  })
+  .catch(err => {
+    // fetch failed, so add IndexedDB data:
+    checkDatabase();
+
   });
 
 function populateTotal() {
@@ -83,7 +87,7 @@ function populateChart() {
         }]
     }
   });
-  
+
   $('#clear-all-data').show();
 
 }
@@ -155,25 +159,30 @@ function sendTransaction(isAdding) {
 }
 
 document.querySelector("#add-btn").onclick = function() {
+  event.preventDefault();
   sendTransaction(true);
 };
 
 document.querySelector("#sub-btn").onclick = function() {
+  event.preventDefault();
   sendTransaction(false);
 };
 
 async function clearData() {
   const clearData = confirm("Are you sure you want to delete all budget data?");
   if (clearData) {
+
     $('#clear-all-workouts').hide();
     
-    const res = await fetch("/api/deleteAll", {
-      method: "DELETE"
-    });
-
-    const json = await res.json();
-
-    location.reload();
+    try {
+      const deleted = await fetch("/api/deleteAll", {
+        method: "DELETE"
+      });
+      res.json(deleted);
+    } catch (err) {
+      clearIndexDBdata();
+    }
 
   }
+  
 }

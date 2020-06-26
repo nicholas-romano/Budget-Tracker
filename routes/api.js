@@ -33,8 +33,8 @@ router.get("/api/transaction", (req, res) => {
 
 router.delete("/api/deleteAll", (req, res) => {
   Transaction.remove({})
-  .then(transations => {
-      res.json(transations);
+  .then(dbTransaction => {
+      res.json(dbTransaction);
   })
   .catch(err => {
       res.json(err);
