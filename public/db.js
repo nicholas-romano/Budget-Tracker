@@ -1,13 +1,20 @@
+const indexedDB =
+  window.indexedDB ||
+  window.mozIndexedDB ||
+  window.webkitIndexedDB ||
+  window.msIndexedDB ||
+  window.shimIndexedDB;
+
 let db;
 // create a new db request for a "budget" database.
 const request = window.indexedDB.open("budget", 1);
 
 request.onupgradeneeded = function(event) {
   // create object store called "pending" and set autoIncrement to true
-  const db = event.target.result;
+  db = event.target.result;
         
   // Creates an object store with a listID keypath that can be used to query on.
-  const budgetListStore = db.createObjectStore("pending", { autoIncrement: true });
+  db.createObjectStore("pending", { autoIncrement: true });
 
 };
 
@@ -76,9 +83,8 @@ function checkDatabase() {
   const getAll = budgetListStore.getAll();
 
     getAll.onsuccess = function() {
-        if (getAll.result.length > 0) {
 
-            console.log("indexedDB data: ", getAll.result);
+        if (getAll.result.length > 0) {
         
             fetch("/api/transaction/bulk", {
                 method: "POST",
