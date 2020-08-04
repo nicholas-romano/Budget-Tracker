@@ -5,7 +5,7 @@
 ![Budget-Tracker](/images/Budget-Tracker.png) 
 
 ## Description 
-This application gives the user the ability to enter and track their income and expenses in a line graph over time. 
+This application gives the user the ability to enter and track income and expenses in a line graph over time. 
 
 ## Table of Contents 
 * [Installation](#installation) 
